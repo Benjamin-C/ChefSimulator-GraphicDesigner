@@ -1,0 +1,132 @@
+package graphicdesigner;
+
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.swing.BoxLayout;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.KeyStroke;
+
+import data.ShapeLoader;
+import data.ShapeSaver;
+import dialog.AreYouSureDialog;
+import dialog.AreYouSureDialogRunnable;
+import dialog.MessageDialog;
+import shapelist.ShapeList;
+import shapelist.ShapeListElement;
+import shapes.Shape;
+import shapes.ShapeType;
+
+public class Main {
+
+	public static void main(String args[]) {
+		
+		
+		JFrame frame = new JFrame("Texture Editor");
+		// Doesn't work RN, maybe later > frame.setBackground(Color.RED);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		ShapeList sl = new ShapeList();
+		
+		JFileChooser fc = new JFileChooser();
+		
+		JMenuBar menuBar = new JMenuBar();
+		JMenu fileMenu = new JMenu("File"); fileMenu.setMnemonic('f'); menuBar.add(fileMenu);
+		JMenuItem loadMenuItem = new JMenuItem("Open", KeyEvent.VK_D);
+		loadMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
+		loadMenuItem.addActionListener(new ActionListener() {
+			@Override public void actionPerformed(ActionEvent arg0) {
+				new AreYouSureDialog("Open file?", "Are you sure you want to open a new file?\nThis will delte any unsaved work", new AreYouSureDialogRunnable() {
+					@Override public void yes() {
+						//Handle open button action.
+						fc.setApproveButtonText("Load");
+						int returnVal = fc.showOpenDialog(null);
+
+				        if (returnVal == JFileChooser.APPROVE_OPTION) {
+				        	File file = fc.getSelectedFile();
+				        	ShapeLoader sload = new ShapeLoader();
+				        	sload.loadShapeListFromFile(file, sl);
+				        } else {
+				        	System.out.println("Open command cancelled by user.");
+				        }
+					}
+					@Override public void no() { } });
+		}});
+		fileMenu.add(loadMenuItem);
+		
+		JMenuItem saveMenuItem = new JMenuItem("Save", KeyEvent.VK_D);
+		saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
+		saveMenuItem.addActionListener(new ActionListener() {
+			@Override public void actionPerformed(ActionEvent arg0) {
+				fc.setApproveButtonText("Save");
+		        int returnVal = fc.showOpenDialog(null);
+
+		        if (returnVal == JFileChooser.APPROVE_OPTION) {
+		            File file = fc.getSelectedFile();
+		            System.out.println("Saving to: " + file.getName() + ".");
+		            try {
+		            	PrintWriter pr = new PrintWriter(file);
+		            	ShapeSaver ssave = new ShapeSaver();
+						for(ShapeListElement s : sl.getShapeList()) {
+							pr.println(ssave.getJsonFromShape(s.getShape()));
+						}
+						pr.flush();
+						pr.close();
+						System.out.println("Done");
+						new MessageDialog("Save texture", "Saving complete to " + file.getPath());
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+		        } else {
+		        	System.out.println("Saving command cancelled by user.");
+		        } }});
+		fileMenu.add(saveMenuItem);
+		
+		frame.setJMenuBar(menuBar);
+		
+		// Graphics editor
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+		
+		// Shape preview
+		GraphicsPanel graphics = new GraphicsPanel(sl);
+		graphics.setPreferredSize(new Dimension(512, 512));
+		panel.add(graphics);
+		
+		// Example Shapes
+		ShapeLoader sload = new ShapeLoader();
+		ShapeSaver ssave = new ShapeSaver();
+		Shape s = new Shape(ShapeType.SOLID_RECTANTLE, 0.5f, 0.45f, 0.2f, 0.2f, 255, 0, 0);
+		sl.addShape(s);
+		Shape s2 = new Shape(ShapeType.SOLID_RECTANTLE, 0.55f, 0.6f, 0.20f, 0.20f, 0, 222, 0);
+		//sl.addShape(s2);
+		String js = ssave.getJsonFromShape(s2);
+		System.out.println(js);
+		Shape s2b = sload.getShapeFromJSON(js);
+		sl.addShape(s2b);
+		Shape s3 = new Shape(ShapeType.SOLID_RECTANTLE, 0.6f, 0.5f, 0.20f, 0.20f, 0, 0, 226);
+		sl.addShape(s3);
+		Shape s4 = sload.getShapeFromJSON("{\"shapetype\":\"solid_elipse\",\"x\":\"0.7\",\"y\":\"0.1\",\"w\":\"0.1\",\"h\":\"0.3\",\"r\":\"255\",\"g\":\"0\",\"b\":\"252\"}");
+		sl.addShape(s4);
+		
+		JPanel sidePanel = new JPanel();
+		sidePanel.setLayout(new BoxLayout(sidePanel, BoxLayout.Y_AXIS));
+		sidePanel.add(sl);
+		panel.add(sidePanel);
+		
+		frame.add(panel);
+		frame.validate();
+		frame.pack();
+		frame.setVisible(true);
+	}
+}
