@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -35,6 +36,7 @@ public class Main {
 		JFrame frame = new JFrame("Texture Editor");
 		// Doesn't work RN, maybe later > frame.setBackground(Color.RED);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setIconImage(new ImageIcon("assets/icon.png").getImage());
 		
 		ShapeList sl = new ShapeList();
 		
