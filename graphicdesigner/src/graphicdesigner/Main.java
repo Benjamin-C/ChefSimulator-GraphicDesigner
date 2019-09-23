@@ -36,7 +36,7 @@ public class Main {
 		JFrame frame = new JFrame("Texture Editor");
 		// Doesn't work RN, maybe later > frame.setBackground(Color.RED);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setIconImage(new ImageIcon(Main.class.getResource("/assets/icon.png")).getImage());
+		frame.setIconImage(new ImageIcon("assets/icon.png").getImage());
 		
 		ShapeList sl = new ShapeList();
 		
