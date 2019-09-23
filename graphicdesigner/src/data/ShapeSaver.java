@@ -1,6 +1,6 @@
 package data;
 
-import shapes.Shape;
+import shapes.GraphicalShape;
 
 public class ShapeSaver {
 	
@@ -8,7 +8,7 @@ public class ShapeSaver {
 		
 	}
 
-	public String getJsonFromShape(Shape s) {
+	public String getJsonFromShape(GraphicalShape s) {
 		return "{\"" + ShapeDataKey.SHPAETYPE_KEY + "\":\"" + s.getShapeType() + "\","
 				 + "\"" + ShapeDataKey.X_KEY + "\":\"" + s.getX() + "\","
 				 + "\"" + ShapeDataKey.Y_KEY + "\":\"" + s.getY() + "\","

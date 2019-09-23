@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
-import shapes.Shape;
+import shapes.GraphicalShape;
 import shapes.ShapeType;
 
 public class ShapeList extends JPanel {
@@ -35,7 +35,7 @@ public class ShapeList extends JPanel {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				Shape ns = new Shape(ShapeType.SOLID_RECTANTLE, 0, 0, 0, 0, 0, 0, 0);
+				GraphicalShape ns = new GraphicalShape(ShapeType.SOLID_RECTANTLE, 0, 0, 0, 0, 0, 0, 0);
 				ns.createEditDialog(new Runnable() {
 					
 					@Override
@@ -61,7 +61,7 @@ public class ShapeList extends JPanel {
 		this.onUpdate = onUpdate;
 	}
 	
-	public void addShape(Shape s) {
+	public void addShape(GraphicalShape s) {
 		if(s != null) {
 			ShapeListElement se = new ShapeListElement(s, onUpdate, this);
 			elems.add(se);
@@ -72,7 +72,7 @@ public class ShapeList extends JPanel {
 		}
 	}
 	
-	public void swap(Shape s, int dir) {
+	public void swap(GraphicalShape s, int dir) {
 		int begin = 0;
 		int end = elems.size();
 		if(dir > 0) {
@@ -97,17 +97,17 @@ public class ShapeList extends JPanel {
 			update();
 		}
 	}
-	public void remove(Shape s) {
+	public void remove(GraphicalShape s) {
 		int n = find(s);
 		if(n >= 0) {
 			elems.remove(n);
 		}
 		update();
 	}
-	public int find(Shape s) {
+	public int find(GraphicalShape s) {
 		return find(s, 0, elems.size());
 	}
-	public int find(Shape s, int begin, int end) {
+	public int find(GraphicalShape s, int begin, int end) {
 		for(int i = begin; i < end; i++) {
 			System.out.println("Searching element " + i);
 			if(elems.get(i).getShape().equals(s)) {

@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 import dialog.MessageDialog;
 import shapelist.ShapeList;
-import shapes.Shape;
+import shapes.GraphicalShape;
 import shapes.ShapeType;
 import data.ShapeDataKey;
 
@@ -50,10 +50,10 @@ public class ShapeLoader {
 		}
 		return list;
 	}
-	public Shape getShapeFromJSON(String json) {
+	public GraphicalShape getShapeFromJSON(String json) {
 		return getShapeFromJSON(json, false, null);
 	}
-	public Shape getShapeFromJSON(String json, boolean mayFix, Runnable onFix) {
+	public GraphicalShape getShapeFromJSON(String json, boolean mayFix, Runnable onFix) {
 		// {"shapetype":"solid_rectangle","x":"0.0","y":"0.0","w":"0.0","h":"0.0","r":"0","g":"0","b":"0"}
 		
 		if(json.charAt(0) == '{' && json.charAt(json.length()-1) == '}' && json.length() > 2) {
@@ -86,7 +86,7 @@ public class ShapeLoader {
 				nt = ShapeType.getShapeTypeFromString(bits.get(ShapeDataKey.SHPAETYPE_KEY));
 				if(nt == null) { loadError = true; loadErrorText = loadErrorText + " " + ShapeDataKey.SHPAETYPE_KEY; nt = ShapeType.SOLID_RECTANTLE; System.out.println("Could not load " + ShapeDataKey.SHPAETYPE_KEY + " (ShapeType " + bits.get(ShapeDataKey.SHPAETYPE_KEY) + " is not valid). Returning default value SOLID_RECTANGLE"); }
 			} else { loadError = true; loadErrorText = loadErrorText + " " + ShapeDataKey.SHPAETYPE_KEY; System.out.println("Could not load " + ShapeDataKey.SHPAETYPE_KEY + " (Key not found). Returning default value SOLID_RECTANGLE"); }
-			Shape back = new Shape(nt, nx, ny, nw, nh, nr, ng, nb);
+			GraphicalShape back = new GraphicalShape(nt, nx, ny, nw, nh, nr, ng, nb);
 			
 			if(loadError & mayFix) {
 				back.createEditDialog(onFix, "Please fix:" + loadErrorText);

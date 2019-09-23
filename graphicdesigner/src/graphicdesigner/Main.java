@@ -25,7 +25,7 @@ import dialog.AreYouSureDialogRunnable;
 import dialog.MessageDialog;
 import shapelist.ShapeList;
 import shapelist.ShapeListElement;
-import shapes.Shape;
+import shapes.GraphicalShape;
 import shapes.ShapeType;
 
 public class Main {
@@ -108,17 +108,17 @@ public class Main {
 		// Example Shapes
 		ShapeLoader sload = new ShapeLoader();
 		ShapeSaver ssave = new ShapeSaver();
-		Shape s = new Shape(ShapeType.SOLID_RECTANTLE, 0.5f, 0.45f, 0.2f, 0.2f, 255, 0, 0);
+		GraphicalShape s = new GraphicalShape(ShapeType.SOLID_RECTANTLE, 0.5f, 0.45f, 0.2f, 0.2f, 255, 0, 0);
 		sl.addShape(s);
-		Shape s2 = new Shape(ShapeType.SOLID_RECTANTLE, 0.55f, 0.6f, 0.20f, 0.20f, 0, 222, 0);
+		GraphicalShape s2 = new GraphicalShape(ShapeType.SOLID_RECTANTLE, 0.55f, 0.6f, 0.20f, 0.20f, 0, 222, 0);
 		//sl.addShape(s2);
 		String js = ssave.getJsonFromShape(s2);
 		System.out.println(js);
-		Shape s2b = sload.getShapeFromJSON(js);
+		GraphicalShape s2b = sload.getShapeFromJSON(js);
 		sl.addShape(s2b);
-		Shape s3 = new Shape(ShapeType.SOLID_RECTANTLE, 0.6f, 0.5f, 0.20f, 0.20f, 0, 0, 226);
+		GraphicalShape s3 = new GraphicalShape(ShapeType.SOLID_RECTANTLE, 0.6f, 0.5f, 0.20f, 0.20f, 0, 0, 226);
 		sl.addShape(s3);
-		Shape s4 = sload.getShapeFromJSON("{\"shapetype\":\"solid_elipse\",\"x\":\"0.7\",\"y\":\"0.1\",\"w\":\"0.1\",\"h\":\"0.3\",\"r\":\"255\",\"g\":\"0\",\"b\":\"252\"}");
+		GraphicalShape s4 = sload.getShapeFromJSON("{\"shapetype\":\"solid_elipse\",\"x\":\"0.7\",\"y\":\"0.1\",\"w\":\"0.1\",\"h\":\"0.3\",\"r\":\"255\",\"g\":\"0\",\"b\":\"252\"}");
 		sl.addShape(s4);
 		
 		JPanel sidePanel = new JPanel();

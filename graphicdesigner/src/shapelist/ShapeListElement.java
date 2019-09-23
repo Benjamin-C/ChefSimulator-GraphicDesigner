@@ -11,13 +11,13 @@ import javax.swing.JPanel;
 
 import dialog.AreYouSureDialog;
 import dialog.AreYouSureDialogRunnable;
-import shapes.Shape;
+import shapes.GraphicalShape;
 
 public class ShapeListElement extends JPanel {
 	
 	/**  */ private static final long serialVersionUID = 6750985189976938626L;
 
-	private Shape me;
+	private GraphicalShape me;
 
 	private JButton upbutton;
 	private JButton downbutton;
@@ -27,7 +27,7 @@ public class ShapeListElement extends JPanel {
 	private Runnable onUpdate;
 	
 	@SuppressWarnings("serial")
-	public ShapeListElement(Shape sh, Runnable onUpdate, ShapeList list) {
+	public ShapeListElement(GraphicalShape sh, Runnable onUpdate, ShapeList list) {
 		me = sh;
 		this.onUpdate = onUpdate;
 		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
@@ -160,7 +160,7 @@ public class ShapeListElement extends JPanel {
 	public void openEditDialog() {
 		me.createEditDialog(null);
 	}
-	public Shape getShape() {
+	public GraphicalShape getShape() {
 		return me;
 	}
 }
