@@ -14,7 +14,7 @@ public class ShapeSaver {
 				 + "\"" + ShapeDataKey.Y_KEY + "\":\"" + s.getY() + "\","
 				 + "\"" + ShapeDataKey.W_KEY + "\":\"" + s.getW() + "\","
 				 + "\"" + ShapeDataKey.H_KEY + "\":\"" + s.getH() + "\","
-				 + "\"" + ShapeDataKey.C_KEY + "\":\"" + s.getH() + "\","
+				 + "\"" + ShapeDataKey.C_KEY + "\":\"" + s.getC() + "\","
 				 + "\"" + ShapeDataKey.R_KEY + "\":\"" + s.getR() + "\","
 				 + "\"" + ShapeDataKey.G_KEY + "\":\"" + s.getG() + "\","
 				 + "\"" + ShapeDataKey.B_KEY + "\":\"" + s.getB() + "\"}";
