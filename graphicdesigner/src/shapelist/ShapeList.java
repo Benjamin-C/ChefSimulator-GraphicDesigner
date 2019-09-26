@@ -35,7 +35,7 @@ public class ShapeList extends JPanel {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				GraphicalShape ns = new GraphicalShape(ShapeType.SOLID_RECTANTLE, 0, 0, 0, 0, 0, 0, 0);
+				GraphicalShape ns = new GraphicalShape(ShapeType.SOLID_RECTANTLE, 0, 0, 0, 0, 0, 0, 0, 0);
 				ns.createEditDialog(new Runnable() {
 					
 					@Override

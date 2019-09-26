@@ -78,6 +78,7 @@ public class ShapeLoader {
 			float ny = getFloatValue(ShapeDataKey.Y_KEY, bits);
 			float nw = getFloatValue(ShapeDataKey.W_KEY, bits);
 			float nh = getFloatValue(ShapeDataKey.H_KEY, bits);
+			float nc = getFloatValue(ShapeDataKey.C_KEY, bits);
 			int nr = getColorValue(ShapeDataKey.R_KEY, bits);
 			int ng = getColorValue(ShapeDataKey.G_KEY, bits);
 			int nb = getColorValue(ShapeDataKey.B_KEY, bits);
@@ -86,7 +87,7 @@ public class ShapeLoader {
 				nt = ShapeType.getShapeTypeFromString(bits.get(ShapeDataKey.SHPAETYPE_KEY));
 				if(nt == null) { loadError = true; loadErrorText = loadErrorText + " " + ShapeDataKey.SHPAETYPE_KEY; nt = ShapeType.SOLID_RECTANTLE; System.out.println("Could not load " + ShapeDataKey.SHPAETYPE_KEY + " (ShapeType " + bits.get(ShapeDataKey.SHPAETYPE_KEY) + " is not valid). Returning default value SOLID_RECTANGLE"); }
 			} else { loadError = true; loadErrorText = loadErrorText + " " + ShapeDataKey.SHPAETYPE_KEY; System.out.println("Could not load " + ShapeDataKey.SHPAETYPE_KEY + " (Key not found). Returning default value SOLID_RECTANGLE"); }
-			GraphicalShape back = new GraphicalShape(nt, nx, ny, nw, nh, nr, ng, nb);
+			GraphicalShape back = new GraphicalShape(nt, nx, ny, nw, nh, nc, nr, ng, nb);
 			
 			if(loadError & mayFix) {
 				back.createEditDialog(onFix, "Please fix:" + loadErrorText);
