@@ -2,15 +2,15 @@ package data;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-import dialog.MessageDialog;
-import shapelist.ShapeList;
-import shapes.GraphicalShape;
+import graphics.Texture;
+import shapes.Shape;
 import shapes.ShapeType;
-import data.ShapeDataKey;
 
 public class ShapeLoader {
 	
@@ -26,34 +26,57 @@ public class ShapeLoader {
 	 * @param json the String JSON to interpert
 	 * @return the Shape the JSON represents
 	 */
-		
-	private boolean loadError = false;
-	private String loadErrorText;
 	
-	public ShapeList loadShapeListFromFile(File file, ShapeList list) {
-		if(list == null) {
-			throw new NullPointerException("Must specify a ShapeList to load to from the file");
-		}
-		System.out.println("Opening: " + file.getName() + ".");
-    	try {
-			Scanner s = new Scanner(file);
-			list.getShapeList().clear();
-			ShapeLoader sload = new ShapeLoader();
-			while(s.hasNextLine()) {
-				list.addShape(sload.getShapeFromJSON(s.nextLine(), true, new Runnable() {
-					@Override public void run() { list.redrawShape(); }}));
+	public Texture loadShapeList(File file) {
+		Texture list = new Texture();
+/*>*/	System.out.println("Trying " + file.getName());
+		if(file.exists()) {
+/*>*/		System.out.println("It exists");
+			list = loadShapeListFromFile(file);
+		} else {
+/*>*/		System.out.println("Trying as directory");
+			File dir = new File(file.getPath().substring(0, file.getPath().lastIndexOf(".")));
+			System.out.println("Test path = " + dir.getPath());
+			if(dir.isDirectory()) {
+				System.out.println("Loading directory: " + dir.getName() + " ...");
+				
+				File[] listOfFiles = dir.listFiles();
+/*>*/			System.out.println("Trying files in directory");
+				for (File f : listOfFiles) {
+					if (f.isFile()) {
+						FoodState key = FoodState.valueOf(f.getName().substring(0, f.getName().lastIndexOf(".")).toUpperCase());
+						list.put(key, loadShapeList(f).get(FoodState.RAW));
+					} else if (f.isDirectory()) {
+						System.out.println("Directory " + f.getName());
+					}
+				}
+			} else {
+				System.out.println("Not directory :(");
 			}
-			s.close();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 		return list;
 	}
-	public GraphicalShape getShapeFromJSON(String json) {
-		return getShapeFromJSON(json, false, null);
+	
+	public Texture loadShapeListFromFile(File file) {
+		Texture list = new Texture();
+		System.out.println("Loading: " + file.getName() + " ... ");
+    	try {
+			Scanner s = new Scanner(file);
+			ShapeLoader sload = new ShapeLoader();
+			List<Shape> txtr = new ArrayList<Shape>();
+			while(s.hasNextLine()) {
+				txtr.add(sload.getShapeFromJSON(s.nextLine()));
+			}
+			list.put(FoodState.RAW, txtr);
+			s.close();
+			System.out.println("Done loading " + file.getName());
+		} catch (FileNotFoundException e) {
+			System.out.println("File " + file.getPath() + " not found.");
+		}
+		return list;
 	}
-	public GraphicalShape getShapeFromJSON(String json, boolean mayFix, Runnable onFix) {
+	
+	public Shape getShapeFromJSON(String json) {
 		// {"shapetype":"solid_rectangle","x":"0.0","y":"0.0","w":"0.0","h":"0.0","r":"0","g":"0","b":"0"}
 		
 		if(json.charAt(0) == '{' && json.charAt(json.length()-1) == '}' && json.length() > 2) {
@@ -68,11 +91,9 @@ public class ShapeLoader {
 				{
 					bits.put(parts[0].substring(1, parts[0].length()-1), parts[1].substring(1, parts[1].length()-1));
 				} else {
-					new MessageDialog("Image loading issues", "Error loading " + s + ". Skipping.");
+					System.out.println("Error loading " + s + ". Skipping.");
 				}
 			}
-			
-			loadError = false; loadErrorText = "";
 			
 			float nx = getFloatValue(ShapeDataKey.X_KEY, bits);
 			float ny = getFloatValue(ShapeDataKey.Y_KEY, bits);
@@ -84,17 +105,13 @@ public class ShapeLoader {
 			int nb = getColorValue(ShapeDataKey.B_KEY, bits);
 			ShapeType nt = ShapeType.SOLID_RECTANTLE;
 			if(bits.containsKey(ShapeDataKey.SHPAETYPE_KEY)) {
-				nt = ShapeType.getShapeTypeFromString(bits.get(ShapeDataKey.SHPAETYPE_KEY));
-				if(nt == null) { loadError = true; loadErrorText = loadErrorText + " " + ShapeDataKey.SHPAETYPE_KEY; nt = ShapeType.SOLID_RECTANTLE; System.out.println("Could not load " + ShapeDataKey.SHPAETYPE_KEY + " (ShapeType " + bits.get(ShapeDataKey.SHPAETYPE_KEY) + " is not valid). Returning default value SOLID_RECTANGLE"); }
-			} else { loadError = true; loadErrorText = loadErrorText + " " + ShapeDataKey.SHPAETYPE_KEY; System.out.println("Could not load " + ShapeDataKey.SHPAETYPE_KEY + " (Key not found). Returning default value SOLID_RECTANGLE"); }
-			GraphicalShape back = new GraphicalShape(nt, nx, ny, nw, nh, nc, nr, ng, nb);
-			
-			if(loadError & mayFix) {
-				back.createEditDialog(onFix, "Please fix:" + loadErrorText);
-			}
+				nt = ShapeType.valueOf(bits.get(ShapeDataKey.SHPAETYPE_KEY).toUpperCase());
+				if(nt == null) { nt = ShapeType.SOLID_RECTANTLE; System.out.println("Could not load " + ShapeDataKey.SHPAETYPE_KEY + " (ShapeType " + bits.get(ShapeDataKey.SHPAETYPE_KEY) + " is not valid). Returning default value SOLID_RECTANGLE"); }
+			} else { System.out.println("Could not load " + ShapeDataKey.SHPAETYPE_KEY + " (Key not found). Returning default value SOLID_RECTANGLE"); }
+			Shape back = new Shape(nt, nx, ny, nw, nh, nc, nr, ng, nb);
 			return back;
 		} else {
-			new MessageDialog("Image loading issues", "Error loading JSON.\nIt may be missing curley brackets\nor data. Skipping. Error JSON:\n" + json);
+			System.out.println("Error loading JSON.\nIt may be missing curley brackets\nor data. Skipping. Error JSON:\n" + json);
 		}
 		return null;
 	}
@@ -107,11 +124,9 @@ public class ShapeLoader {
 			try {
 				return Integer.parseInt(map.get(key));
 			} catch(NumberFormatException e) {
-				loadError = true; loadErrorText = loadErrorText + " " + key;
 				System.out.println("Could not load " + key + " (NumberFormatException). Returning default value 0");
 			}
 		} else {
-			loadError = true; loadErrorText = loadErrorText + " " + key;
 			System.out.println("Could not load " + key + " (Key not found). Returning default value 0");
 		}
 		return 0;
@@ -121,11 +136,9 @@ public class ShapeLoader {
 			try {
 				return Float.parseFloat(map.get(key));
 			} catch(NumberFormatException e) {
-				loadError = true; loadErrorText = loadErrorText + " " + key;
 				System.out.println("Could not load " + key + " (NumberFormatException). Returning default value 0");
 			}
 		} else {
-			loadError = true; loadErrorText = loadErrorText + " " + key;
 			System.out.println("Could not load " + key + " (Key not found). Returning default value 0");
 		}
 		return 0;

@@ -4,7 +4,10 @@ import dialog.CreationDialog;
 import dialog.CreationDialogDoneRunnable;
 
 public class GraphicalShape extends Shape {
-
+	
+	public GraphicalShape(Shape s) {
+		super(s.getShapeType(), s.getX(), s.getY(), s.getW(), s.getH(), s.getC(), s.getR(), s.getG(), s.getB());
+	}
 	public GraphicalShape(ShapeType shp, float x, float y, float w, float h, float c, int r, int g, int b) {
 		super(shp, x, y, w, h, c, r, g, b);
 		// TODO Auto-generated constructor stub

@@ -59,7 +59,7 @@ public class Main {
 				        if (returnVal == JFileChooser.APPROVE_OPTION) {
 				        	File file = fc.getSelectedFile();
 				        	ShapeLoader sload = new ShapeLoader();
-				        	sload.loadShapeListFromFile(file, sl);
+				        	sl.addAll(sload.loadShapeListFromFile(file));
 				        } else {
 				        	System.out.println("Open command cancelled by user.");
 				        }
@@ -116,11 +116,11 @@ public class Main {
 		//sl.addShape(s2);
 		String js = ssave.getJsonFromShape(s2);
 		System.out.println(js);
-		GraphicalShape s2b = sload.getShapeFromJSON(js);
+		GraphicalShape s2b = new GraphicalShape(sload.getShapeFromJSON(js));
 		sl.addShape(s2b);
 		GraphicalShape s3 = new GraphicalShape(ShapeType.SOLID_RECTANTLE, 0.6f, 0.5f, 0.20f, 0.20f, 0f, 0, 0, 226);
 		sl.addShape(s3);
-		GraphicalShape s4 = sload.getShapeFromJSON("{\"shapetype\":\"solid_elipse\",\"x\":\"0.7\",\"y\":\"0.1\",\"w\":\"0.1\",\"h\":\"0.3\",\"r\":\"255\",\"g\":\"0\",\"b\":\"252\"}");
+		GraphicalShape s4 = new GraphicalShape(sload.getShapeFromJSON("{\"shapetype\":\"solid_elipse\",\"x\":\"0.7\",\"y\":\"0.1\",\"w\":\"0.1\",\"h\":\"0.3\",\"r\":\"255\",\"g\":\"0\",\"b\":\"252\"}"));
 		sl.addShape(s4);
 		
 		JPanel sidePanel = new JPanel();

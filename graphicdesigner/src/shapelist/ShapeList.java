@@ -11,7 +11,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
+import data.FoodState;
+import graphics.Texture;
 import shapes.GraphicalShape;
+import shapes.Shape;
 import shapes.ShapeType;
 
 public class ShapeList extends JPanel {
@@ -72,6 +75,12 @@ public class ShapeList extends JPanel {
 		}
 	}
 	
+	public void setAll(Texture t) {
+		// TODO remove old shapes first
+		for(Shape s : t.getList().get(FoodState.RAW)) {
+			addShape(new GraphicalShape(s));
+		}
+	}
 	public void swap(GraphicalShape s, int dir) {
 		int begin = 0;
 		int end = elems.size();
