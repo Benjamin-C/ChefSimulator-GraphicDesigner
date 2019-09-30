@@ -59,7 +59,7 @@ public class Main {
 				        if (returnVal == JFileChooser.APPROVE_OPTION) {
 				        	File file = fc.getSelectedFile();
 				        	ShapeLoader sload = new ShapeLoader();
-				        	sl.addAll(sload.loadShapeListFromFile(file));
+				        	sl.setAll(sload.loadShapeListFromFile(file));
 				        } else {
 				        	System.out.println("Open command cancelled by user.");
 				        }

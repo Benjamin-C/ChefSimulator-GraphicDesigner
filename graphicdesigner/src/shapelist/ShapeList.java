@@ -76,11 +76,12 @@ public class ShapeList extends JPanel {
 	}
 	
 	public void setAll(Texture t) {
-		// TODO remove old shapes first
+		elems.clear();
 		for(Shape s : t.getList().get(FoodState.RAW)) {
 			addShape(new GraphicalShape(s));
 		}
 	}
+	
 	public void swap(GraphicalShape s, int dir) {
 		int begin = 0;
 		int end = elems.size();
