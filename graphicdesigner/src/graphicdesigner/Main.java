@@ -23,8 +23,8 @@ import data.ShapeSaver;
 import dialog.AreYouSureDialog;
 import dialog.AreYouSureDialogRunnable;
 import dialog.MessageDialog;
+import graphics.Texture;
 import shapelist.ShapeList;
-import shapelist.ShapeListElement;
 import shapes.GraphicalShape;
 import shapes.ShapeType;
 
@@ -40,7 +40,8 @@ public class Main {
 		frame.setIconImage(new ImageIcon(Main.class.getResource("/assets/icon.png")).getImage());
 		//frame.setIconImage(new ImageIcon("assets/icon.png").getImage());
 		
-		ShapeList sl = new ShapeList();
+		Texture tx = new Texture();
+		ShapeList sl = new ShapeList(tx);
 		
 		JFileChooser fc = new JFileChooser();
 		
@@ -59,7 +60,9 @@ public class Main {
 				        if (returnVal == JFileChooser.APPROVE_OPTION) {
 				        	File file = fc.getSelectedFile();
 				        	ShapeLoader sload = new ShapeLoader();
-				        	sl.setAll(sload.loadShapeListFromFile(file));
+				        	Texture txt = sload.loadShapeListFromFile(file);
+				        	System.out.println(txt);
+				        	sl.setAll(txt);
 				        } else {
 				        	System.out.println("Open command cancelled by user.");
 				        }
@@ -81,9 +84,11 @@ public class Main {
 		            try {
 		            	PrintWriter pr = new PrintWriter(file);
 		            	ShapeSaver ssave = new ShapeSaver();
-						for(ShapeListElement s : sl.getShapeList()) {
-							pr.println(ssave.getJsonFromShape(s.getShape()));
-						}
+//						for(ShapeListElement s : sl.getShapeListElements()) {
+//							pr.println(ssave.getJsonFromShape(s.getShape()));
+//						}
+		            	sl.save();
+		            	pr.println(ssave.save(sl.getTexture()));
 						pr.flush();
 						pr.close();
 						System.out.println("Done");

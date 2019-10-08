@@ -32,6 +32,9 @@ public class CreationDialog {
 	private final int optCnt;
 	
 	public CreationDialog(String title, CreationDialogDoneRunnable onDone, ShapeType shp, String labels[], String values[]) {
+		this(title, onDone, shp, labels, values, false);
+	}
+	public CreationDialog(String title, CreationDialogDoneRunnable onDone, ShapeType shp, String labels[], String values[], boolean isNew) {
 		onDoneObj = onDone;
 		
 		jdl = new JDialog();
@@ -69,6 +72,7 @@ public class CreationDialog {
 			}
 			
 		});
+		applybutton.setEnabled(!isNew);
 		
 		donebutton = new JButton("Done");
 		donebutton.addActionListener(new ActionListener() {

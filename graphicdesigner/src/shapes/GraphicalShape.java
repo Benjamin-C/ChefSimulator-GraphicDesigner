@@ -13,9 +13,12 @@ public class GraphicalShape extends Shape {
 		// TODO Auto-generated constructor stub
 	}
 	public void createEditDialog(Runnable onDone) {
-		createEditDialog(onDone, "Change shape");
+		createEditDialog(false, "Change shape", onDone);
 	}
-	public void createEditDialog(Runnable onDone, String title) {
+	public void createEditDialog(boolean isNew, Runnable onDone) {
+		createEditDialog(isNew, "Change shape", onDone);
+	}
+	public void createEditDialog(boolean isNew, String title, Runnable onDone) {
 		String[] labels = {"X", "Y", "W", "H", "C", "R", "G", "B"};
 		String[] text = new String[8]; // Change this line if you add/subtract elements from the dialog
 		text[0] = Float.toString(x);
@@ -36,6 +39,6 @@ public class GraphicalShape extends Shape {
 					onDone.run();
 				}
 			}
-		}, shp, labels, text);
+		}, shp, labels, text, isNew);
 	}
 }

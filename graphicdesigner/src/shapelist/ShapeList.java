@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
@@ -29,17 +30,41 @@ public class ShapeList extends JPanel {
 	
 	private JButton add;
 	
-	public ShapeList() {
+	private JComboBox<FoodState> statebox;
+	private FoodState state;
+	
+	private Texture texture;
+	
+	public ShapeList(Texture t) {
+		texture = t;
+		state = FoodState.RAW;
+		
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		setAlignmentX(TOP_ALIGNMENT);
+		
 		elems = new ArrayList<ShapeListElement>();
-
+		
+		JPanel stateboxpanel = new JPanel();
+		statebox = new JComboBox<FoodState>(FoodState.values());
+		statebox.setSelectedItem(FoodState.RAW);
+		statebox.addActionListener(new ActionListener() {
+			@Override public void actionPerformed(ActionEvent arg0) {
+				texture.put(state, getShapes());
+				state = (FoodState) statebox.getSelectedItem();
+				setAll(texture, state);
+				update();
+			}
+		});
+		stateboxpanel.add(statebox);
+		add(stateboxpanel);
+		
 		add = new JButton("+");
 		add.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				GraphicalShape ns = new GraphicalShape(ShapeType.SOLID_RECTANTLE, 0, 0, 0, 0, 0, 0, 0, 0);
-				ns.createEditDialog(new Runnable() {
+				ns.createEditDialog(true, new Runnable() {
 					
 					@Override
 					public void run() {
@@ -54,12 +79,15 @@ public class ShapeList extends JPanel {
 		
 		controls = new JPanel();
 		controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
-		controls.add(new JTextArea("ddtet"));
+		controls.add(new JTextArea("you no should see dis"));
 		add(controls);
 		
 		update();
 	}
 
+	public void save() {
+		texture.put(state, getShapes());
+	}
 	public void setOnUpdate(Runnable onUpdate) {
 		this.onUpdate = onUpdate;
 	}
@@ -76,12 +104,24 @@ public class ShapeList extends JPanel {
 	}
 	
 	public void setAll(Texture t) {
+		setAll(t, FoodState.RAW);
+	}
+	public void setAll(Texture t, FoodState s) {
+		texture = t;
 		elems.clear();
-		for(Shape s : t.getList().get(FoodState.RAW)) {
-			addShape(new GraphicalShape(s));
+		if(t.get(s) == null) {
+			List<Shape> list = new ArrayList<Shape>();
+			t.put(s, list);
+		}
+		System.out.println(t.get(s));
+		for(Shape sh : t.get(s)) {
+			addShape(new GraphicalShape(sh));
 		}
 	}
 	
+	public Texture getTexture() {
+		return texture;
+	}
 	public void swap(GraphicalShape s, int dir) {
 		int begin = 0;
 		int end = elems.size();
@@ -158,7 +198,15 @@ public class ShapeList extends JPanel {
 			onUpdate.run();
 		}
 	}
-	public List<ShapeListElement> getShapeList() {
+	public List<ShapeListElement> getShapeListElements() {
 		return elems;
+	}
+	
+	public List<Shape> getShapes() {
+		List<Shape> out = new ArrayList<Shape>();
+		for(int i = 0; i < elems.size(); i++) {
+			out.add(elems.get(i).getShape());
+		}
+		return out;
 	}
 }

@@ -1,6 +1,7 @@
 package data;
 
-import shapes.GraphicalShape;
+import graphics.Texture;
+import shapes.Shape;
 
 public class ShapeSaver {
 	
@@ -8,7 +9,19 @@ public class ShapeSaver {
 		
 	}
 
-	public String getJsonFromShape(GraphicalShape s) {
+	public String save(Texture t) {
+		String save = "";
+		for(FoodState s : FoodState.values()) {
+			save = save + "\n" + s + ":\n";
+			if(t.get(s) != null) {
+				for(Shape sh : t.get(s)) {
+					save = save + getJsonFromShape(sh) + "\n";
+				}
+			}
+		}
+		return save;
+	}
+	public String getJsonFromShape(Shape s) {
 		return "{\"" + ShapeDataKey.SHPAETYPE_KEY + "\":\"" + s.getShapeType() + "\","
 				 + "\"" + ShapeDataKey.X_KEY + "\":\"" + s.getX() + "\","
 				 + "\"" + ShapeDataKey.Y_KEY + "\":\"" + s.getY() + "\","

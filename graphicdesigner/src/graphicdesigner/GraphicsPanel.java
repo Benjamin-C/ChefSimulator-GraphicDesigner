@@ -43,7 +43,7 @@ public class GraphicsPanel extends JPanel {
 			color = !color;
 		}
 		for(int i = shapes.shapeCount()-1; i >= 0; i--) {
-			shapes.getShapeList().get(i).getShape().draw(width, height, gr);
+			shapes.getShapeListElements().get(i).getShape().draw(width, height, gr);
 		}
 	}
 	
