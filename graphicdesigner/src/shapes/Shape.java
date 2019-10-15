@@ -20,11 +20,17 @@ public class Shape {
 	protected int g = 0;
 	protected int b = 0;
 	
+	/** X loc */
 	protected int xs = 0;
+	/** Y loc */
 	protected int ys = 0;
+	/** X pos */
 	protected int ws = 0;
+	/** Y pos */
 	protected int hs = 0;
+	/** shape size */
 	protected int ss = 1;
+	/** X loc */
 	protected Polygon triangle;
 	
 	protected int owi = 0;
@@ -53,13 +59,18 @@ public class Shape {
 		draw(wi, he, 0, 0, gr);
 	}
 	public void draw(int wi, int he, int ox, int oy, Graphics gr) {
+		draw(wi, he, ox, oy, gr, 0);
+	}
+	public void draw(int wi, int he, int ox, int oy, Graphics gr, int dir) {
 		gr.setColor(new Color(r, g, b));
 		
 		if(!(wi == owi && he == ohe && ox == oox && oy == ooy && gr == ogr) || recalc) {
-			xs = (int) (x*wi) + ox;
-			ys = (int) (y*he) + oy;
-			ws = (int) (w*wi);
-			hs = (int) (h*he);
+			switch(dir) { // 0=u, 1=r, 2=d, 3=l
+			case 0: { xs = (int) (x*wi) + ox; ys = (int) (y*he) + oy; ws = (int) (w*wi); hs = (int) (h*he); } break;
+			case 1: { xs = (int) ((1-y-h)*wi) + ox; ys = (int) ((1-x-w)*he) + oy; ws = (int) (h*wi); hs = (int) (w*he); } break;
+			case 2: { xs = (int) ((1-x-w)*wi) + ox; ys = (int) ((1-y-h)*he) + oy; ws = (int) (w*wi); hs = (int) (h*he); } break;
+			case 3: { xs = (int) (y*wi) + ox; ys = (int) (x*he) + oy; ws = (int) (h*wi); hs = (int) (w*he); } break;
+			}
 			
 			ss = (int) (wi*c);
 			if(ss < 1) {
@@ -67,7 +78,10 @@ public class Shape {
 			}
 			
 			switch(shp) {
-			case EMPTY_TRIANGLE_H: // or next line
+			case SOLID_RECTANTLE: {
+				ss = (int) (c * Math.min(ws, hs));
+			} break;
+			case EMPTY_TRIANGLE_H: // or next case
 			case SOLID_TRIANGLE_H: {
 				triangle.reset();
 				triangle.addPoint(xs, ys);
@@ -75,7 +89,7 @@ public class Shape {
 				triangle.addPoint(xs + ws, ys + (int) (hs*c));
 			} break;
 
-			case EMPTY_TRIANGLE_V: // or next line
+			case EMPTY_TRIANGLE_V: // or next case
 			case SOLID_TRIANGLE_V: {
 				triangle.reset();
 				triangle.addPoint(xs, ys);
@@ -94,7 +108,7 @@ public class Shape {
 		case SOLID_ELIPSE: gr.fillOval(xs, ys, ws, hs); break;
 		
 		case EMPTY_RECTANGLE: prepSize(gr, ss); gr.drawRect(xs, ys, ws, hs); resetSize(gr);  break;
-		case SOLID_RECTANTLE: gr.fillRect(xs, ys, ws, hs); break;
+		case SOLID_RECTANTLE: gr.fillRoundRect(xs, ys, ws, hs, ss, ss); break;
 		
 		case EMPTY_TRIANGLE_V: prepSize(gr, ss); gr.drawPolygon(triangle); resetSize(gr); break;
 		case SOLID_TRIANGLE_V: gr.fillPolygon(triangle); break;
@@ -193,6 +207,7 @@ public class Shape {
 		return test.getID() == id;
 	}
 	
+	@Override
 	public Shape clone() {
 		return new Shape(shp, x, y, w, h, c, r, g, b);
 	}
@@ -200,5 +215,4 @@ public class Shape {
 	public String toString() {
 		return "Shape[shp=" + shp + ",x=" + x + ",y=" + y + ",w=" + w + ",h=" + h + ",c=" + c + ",r=" + r + ",g=" + g + ",b=" + b + "]";
 	}
-	
 }
